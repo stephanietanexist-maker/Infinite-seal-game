@@ -11,4 +11,4 @@ Game preview
 ![image alt](https://github.com/stephanietanexist-maker/Infinite-seal-game/blob/1e0071d5f6610232b5bc6c9638c61e7ac541efe4/Screenshot%202026-05-20%20204241.png)
 
 Demo (github): https://stephanietanexist-maker.github.io/Infinite-seal-game/
-Demo (itch.io): https://itch.io/embed-upload/17618255?color=333333
+Demo (itch.io): https://itch.io/embed-upload/17618279?color=333333
