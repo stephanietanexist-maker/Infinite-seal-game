@@ -7,5 +7,5 @@ body{
 
 #board{
     background-color: lightblue;
-    border-bottom: 1px rgb(62, 77, 82);
+    border-bottom: 3px solid rgb(168, 168, 168);
 }
