@@ -15,8 +15,8 @@ let sealImg; //reference image
 
 let snowArray = [];
 
-let snow1Width = 34;
-let snow2Width = 69;
+let snow1Width = 90;
+let snow2Width = 140;
 
 let snowHeight = 70;
 let snowX = 700;
@@ -28,12 +28,9 @@ let snowImg2;
 //game physics
 let velocityX = -8; //snow moving left
 let velocityY = 0;
-let gravity = .4;
-
+let gravity = .35;
 let gameOver = false;
-
 let score = 0;
-
 
 let seal = {
     x : sealX,
@@ -43,6 +40,7 @@ let seal = {
 }
 
 window.onload = function (){
+
     board = document.getElementById("board");
     board.height = boardHeight;
     board.width = boardWidth;
@@ -63,14 +61,22 @@ window.onload = function (){
 
     requestAnimationFrame(update);
     setInterval(placeSnow,1000); //every second we generate snow
+
+    document.addEventListener("keydown", jumpSeal);
+
 }
 
 function update(){
     requestAnimationFrame(update);
-
+    if (gameOver){
+        return;
+        
+    }
     context.clearRect(0, 0, board.width, board.height); //clear the board for each frame I think
     
     //seal
+    velocityY += gravity;
+    seal.y = Math.min (seal.y + velocityY, sealY) //apply gravity but making sure the seal doesn't go through the ground
     context.drawImage(sealImg, seal.x, seal.y, seal.width, seal.height);
 
     //snow
@@ -78,12 +84,59 @@ function update(){
         let snow = snowArray[i];
         snow.x += velocityX;
         context.drawImage(snow.img, snow.x, snow.y, snow.width, snow.height);
+
+        let sealHitbox = {
+            x: seal.x + 30,
+            y: seal.y + 20,
+            width: seal.width - 60,
+            height: seal.height - 30
+        };
+
+        let snowHitbox = {
+            x: snow.x + 10,
+            y: snow.y + 10,
+            width: snow.width - 20,
+            height: snow.height - 20
+        };
+
+        if (detectCollision(sealHitbox, snowHitbox)){
+            gameOver = true;
+            sealImg.src = "./Images/seal-dead.png";
+            sealImg.onload = function (){
+                context.drawImage(sealImg, seal.x, seal.y, seal.width, seal.height);
+            }
+        }
+    }
+
+    //score
+    context.fillStyle = "White";
+    context.font = "20px courier"
+    score += 0.1;
+    context.fillText(Math.floor(score), 5, 20);
+
+
+
+}
+
+function jumpSeal(e){
+    if (gameOver){
+        return;
+    }
+
+    if ((e.code == "Space" || e.code =="ArrowUp") && seal.y == sealY){
+
+        //jump
+        velocityY = -10;
     }
 
 }
 
-
 function placeSnow(){
+
+    if (gameOver){
+        return;
+    }
+
     let snow = {
         img: null,
         x : snowX,
@@ -108,8 +161,17 @@ function placeSnow(){
 
     }
 
-    if (snowArray.lenth > 5){
+    if (snowArray.length > 5){
         snowArray.shift(); //remove the first element from the array so there isn't more than 5 snow at a time
     }
 
 }
+
+function detectCollision (a,b){
+   
+    return a.x < b.x + b.width &&
+           a.x + a.width > b.x &&
+           a.y < b.y + b.height &&
+           a.y + a.height > b.y;
+}
+
